@@ -37,11 +37,18 @@ shapes <- urban_areas(class = "sf")
 san_francisco <- shapes %>% 
   
   filter(str_detect(NAME10, "San Francisco--Oakland, CA"))
+
+# Get Shape Files a Different Way via the code on Piazza 
+
+#shapes_2 <- places("ca", class = "sf", cb = TRUE) %>% 
+#  filter(NAME == "SAN FRANCISCO")
   
  
-shot_locations <- st_as_sf(shotspotter, coords = c("Longitude", "Latitude"), crs = 4326)
+shot_locations <- st_as_sf(shotspotter, coords = c("Longitude", "Latitude"), crs = st_crs(san_francisco))
 
 # st_crs(shot_locations) --> Not sure what this is doing
+
+# hmm why don't I have an outline of the city behind the dots. 
 
 ggplot(data = san_francisco) +
   
@@ -49,10 +56,14 @@ ggplot(data = san_francisco) +
   
   geom_sf(data = shot_locations) +
   
-  theme_map()
+  theme_map() +
+  
+  transition_states()
  
 # st_as_sf() %>%
-# st_crs()
+
+# what story do I want to tell. 
+
 
 
 
