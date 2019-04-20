@@ -12,6 +12,9 @@ library(ggplot2)
 library(mapproj)
 library(ggthemes)
 library(viridis)
+library(scales)
+library(gganimate)
+
 
 
 (tigris_class = "sf")
@@ -45,9 +48,19 @@ shotspotter <- shotspotter %>%
   
   mutate(Hours = hour(Time)) %>% 
   
+  mutate(Date = dmy(Date)) %>% 
+  
+  mutate(Month = month(Date)) %>% 
+  
+  mutate(Month = fct_recode(Month, "January" = 1, "February" = 2, "March" = 3, "April" = 4,
+                            "May" = 5, "June" = 6, "July" = 7, "August" = 8, "September" = 9, 
+                            "October" = 10, "November" = 11, "December" = 12)) %>% 
+  
   filter(Latitude > 37.71) %>% 
+  
+  filter(Rnds < 100) %>% 
 
-# turn locations into sf object in order to graph 
+  # turn locations into sf object in order to graph 
   st_as_sf(coords = c("Longitude", "Latitude"), crs = st_crs(san_francisco))
 
 
@@ -55,17 +68,39 @@ shotspotter <- shotspotter %>%
 
 ggplot(data = san_francisco) + 
   
-  geom_sf() + 
+  # setting up san francisco backdrop
   
-  geom_sf(data = shotspotter, aes(size = "Rnds", color = "Hours")) +
+  geom_sf(fill = "cornsilk") + 
+  
+  # putting in layer with shop
+  
+  geom_sf(data = shotspotter, aes(size = Rnds, color = Hours)) +
+  
+  scale_color_viridis() + 
+  
+  #scale_size_continuous() +
+  
+  # formatting graph, by scaling and setting limits.
+  
+  coord_sf(xlim = c(-122.52, -122.35), ylim = c(37.7, 37.85)) +
   
   scale_x_continuous(limits = c(-122.52, -122.35)) +
   
   scale_y_continuous(limits = c(37.7, 37.85)) +
+  
+  xlab("Longitude") + ylab("Latitude") +
+  
+  ggtitle("Shotspotter SF", subtitle = "Hour: {frame_time}") +
+    
+  labs(size = "Rounds Fired", color = "Hour of the Day", caption = "Source: Justice Tech Lab") +
 
   theme_map() + 
   
-  theme_tufte() 
+  theme_tufte() #+ 
+  
+  #transition_states(Hours, transition_length = 24) + 
+
+  #ease_aes()
 
 
   
@@ -77,8 +112,7 @@ ggplot(data = san_francisco) +
  #   caption = "working"
 #  ) +
   
-  #xlab("Longitude") + 
-  #ylab("Latitude") +
+
   
  
   
