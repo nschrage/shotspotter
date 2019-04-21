@@ -61,16 +61,42 @@ shotspotter <- shotspotter %>%
   filter(Latitude > 37.71) %>% 
   
   filter(Rnds < 100) %>% 
-  
-  group_by(Week) %>% 
 
   # turn locations into sf object in order to graph 
-  st_as_sf(coords = c("Longitude", "Latitude"), crs = st_crs(san_francisco))
+  st_as_sf(coords = c("Longitude", "Latitude"), crs = st_crs(san_francisco)) %>%
+  
+  
+shotspotter_sf <- shotspotter %>% 
+  
+  mutate(Rnds = as.numeric(Rnds)) %>%
+  
+  mutate(Hours = hour(Time)) %>% 
+  
+  mutate(Date = dmy(Date)) %>% 
+  
+  mutate(Month = month(Date)) %>% 
+  
+  mutate(Week = week(Date)) %>% 
+  
+  mutate(Year = year(Date)) %>% 
+  
+  filter(Year == 2015) %>% 
+  
+  filter(Latitude > 37.71) %>% 
+  
+  filter(Rnds > 50) %>% 
+  
+  # turn locations into sf object in order to graph 
+  st_as_sf(coords = c("Longitude", "Latitude"), crs = st_crs(san_francisco)) %>% 
+  
+
+  
+write_rds("shotspotter_sf.rds", shotspotter_sf, compress = "none")
 
 
 # set up plot
 
-ggplot(data = san_francisco) + 
+p1 <- ggplot(data = san_francisco) + 
   
   # setting up san francisco backdrop
   
@@ -78,7 +104,7 @@ ggplot(data = san_francisco) +
   
   # putting in layer with shop
   
-  geom_sf(data = shotspotter, aes(size = Rnds, color = Week), show.legend = FALSE) +
+  geom_sf(data = shotspotter, aes(size = Rnds, color = Month), show.legend = FALSE) +
   
   scale_color_viridis() + 
   
@@ -92,7 +118,7 @@ ggplot(data = san_francisco) +
   
   xlab("Longitude") + ylab("Latitude") +
   
-  ggtitle("ShotSpotter SF Data Collected in {closest_state}, 2015", subtitle = "Size: # of Rounds Fired, Color by Time of Day") +
+  ggtitle("ShotSpotter SF Data Collected in {closest_state}, 2015", subtitle = "Size: # of Rounds Fired, Color by Month (lighter = earlier)") +
     
   labs(caption = "Source: Justice Tech Lab") +
   
@@ -103,6 +129,7 @@ ggplot(data = san_francisco) +
   theme_tufte() #+ 
 
   #transition_states(Month) 
+
 
 
 

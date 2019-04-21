@@ -1,14 +1,3 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
-library(shiny)
-library(markdown)
 library(tigris)
 library(ggplot2)
 library(purrr)
@@ -23,7 +12,10 @@ library(ggthemes)
 library(viridis)
 library(scales)
 library(gganimate)
-library(shiny)
+
+
+
+(tigris_class = "sf")
 
 # Read in Data 
 
@@ -41,58 +33,31 @@ shotspotter <- read_csv("http://justicetechlab.org/wp-content/uploads/2018/05/Sa
                             Longitude = col_double()
                           )) 
 
+
+# Get Shape Files a Different Way via the code on Piazza 
+# first look for places in ca
+
 san_francisco <- places("ca", class = "sf", cb = TRUE) %>% 
   filter(NAME == "San Francisco")
+
+
+
 
 shotspotter <- shotspotter %>% 
   
   mutate(Rnds = as.numeric(Rnds)) %>%
   
-  mutate(Hours = hour(Time)) %>% 
+  #mutate(Date = dmy(Date)) %>% 
   
-  mutate(Date = dmy(Date)) %>% 
+ # mutate(Year = year(Date)) %>% 
   
-  mutate(Month = month(Date)) %>% 
+  #filter(Year == 2015) %>% 
   
-  mutate(Week = week(Date)) %>% 
-  
-  filter(Latitude > 37.71) %>% 
-  
-  filter(Rnds < 100) %>% 
+  filter(Rnds > 20) %>% 
   
   # turn locations into sf object in order to graph 
-  st_as_sf(coords = c("Longitude", "Latitude"), crs = st_crs(san_francisco))
-
-# code out here runs once when the app is launched. 
-
-#shotspotter <- read_rds("~/Desktop/Gov 1005 Projects/shotspotter/shotspotter/shots.rds")
-
-# Define UI for application that draws a histogram
-ui <- fluidPage(
+  st_as_sf(coords = c("Longitude", "Latitude"), crs = st_crs(san_francisco)) 
   
-   # Application title
-   titlePanel("San Francisco, CA ShotSpotter Data Mapped"),
-   
-   fluidRow(
-     column(12, includeMarkdown("shotspotterMD.Rmd"))
-   ),
-   
-   mainPanel(
-     imageOutput("plot1")
-   )
   
-)
-
-# Define server logic required to draw a histogram
-server <- function(input, output) {
-   
-   output$plot1 <- renderPlot({
-     
-   })
-}
-     
   
-
-# Run the application 
-shinyApp(ui = ui, server = server)
-
+write_rds(shotspotter, "shotspotter_sf.rds", compress = "none")
