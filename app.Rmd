@@ -1,3 +1,13 @@
+---
+title: "shotspottter"
+author: "Niel Schrage"
+date: "4/20/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
 # Load Packages
 
 library(tigris)
@@ -14,10 +24,11 @@ library(ggthemes)
 library(viridis)
 library(scales)
 library(gganimate)
+```
 
+## Looking at Data 
 
-
-(tigris_class = "sf")
+```{r read in data, echo=FALSE}
 
 # Read in Data 
 
@@ -34,11 +45,9 @@ shotspotter <- read_csv("http://justicetechlab.org/wp-content/uploads/2018/05/Sa
   Latitude = col_double(),
   Longitude = col_double()
 )) 
+```
 
-
-# Get Shape Files a Different Way via the code on Piazza 
-# first look for places in ca
-
+```{r shape files + editing, echo=FALSE}
 san_francisco <- places("ca", class = "sf", cb = TRUE) %>% 
   filter(NAME == "San Francisco")
 
@@ -63,8 +72,9 @@ shotspotter <- shotspotter %>%
 
   # turn locations into sf object in order to graph 
   st_as_sf(coords = c("Longitude", "Latitude"), crs = st_crs(san_francisco))
+```
 
-
+```{r set up plot, echo=FALSE}
 # set up plot
 
 ggplot(data = san_francisco) + 
@@ -99,11 +109,7 @@ ggplot(data = san_francisco) +
   
   theme_tufte() + 
 
-  transition_states(Date, state_length = 106) 
+  transition_states(Date, state_length = 106)
 
-write_rds()
-
-
-
-
+```
 
