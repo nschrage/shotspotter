@@ -187,7 +187,7 @@ p3 <- shotspotter %>%
   
   # putting in layer with shop
   
-  geom_sf(data = shotspotter, aes(size = Rnds, color = Year), show.legend = FALSE) +
+  geom_sf(data = shotspotter, aes(size = Rnds, color = Rnds), show.legend = FALSE) +
   
   scale_color_viridis() + 
   
@@ -201,7 +201,7 @@ p3 <- shotspotter %>%
   
   xlab("Longitude") + ylab("Latitude") +
   
-  ggtitle("ShotSpotter SF Data Collected on {closest_state}", subtitle = "Size: # of Rounds Fired, Color: Year") +
+  ggtitle("ShotSpotter SF Data Collected on {closest_state}", subtitle = "Size: # of Rounds Fired") +
     
   labs(size = "Rounds Fired", color = "Hour of the Day", caption = "Source: Justice Tech Lab") +
   

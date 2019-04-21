@@ -24,48 +24,11 @@ library(viridis)
 library(scales)
 library(gganimate)
 library(shiny)
+library(gifski)
+library(png)
 
-# Read in Data 
-
-shotspotter <- read_csv("http://justicetechlab.org/wp-content/uploads/2018/05/San_Francisco_ShotSpotter.csv", col_types = 
-                          cols(
-                            Type = col_character(),
-                            ID = col_double(),
-                            Date = col_character(),
-                            Time = col_time(format = ""),
-                            Rnds = col_double(),
-                            Beat = col_logical(),
-                            DISPO = col_logical(),
-                            `returned address` = col_character(),
-                            Latitude = col_double(),
-                            Longitude = col_double()
-                          )) 
-
-san_francisco <- places("ca", class = "sf", cb = TRUE) %>% 
-  filter(NAME == "San Francisco")
-
-shotspotter <- shotspotter %>% 
-  
-  mutate(Rnds = as.numeric(Rnds)) %>%
-  
-  mutate(Hours = hour(Time)) %>% 
-  
-  mutate(Date = dmy(Date)) %>% 
-  
-  mutate(Month = month(Date)) %>% 
-  
-  mutate(Week = week(Date)) %>% 
-  
-  filter(Latitude > 37.71) %>% 
-  
-  filter(Rnds < 100) %>% 
-  
-  # turn locations into sf object in order to graph 
-  st_as_sf(coords = c("Longitude", "Latitude"), crs = st_crs(san_francisco))
-
-# code out here runs once when the app is launched. 
-
-#shotspotter <- read_rds("~/Desktop/Gov 1005 Projects/shotspotter/shotspotter/shots.rds")
+shotspotter_sf_plot <- read_rds(path = "~/Desktop/Gov 1005 Projects/shotspotter/shotspotter_sf.rds")
+sf_shape_files <- read_rds(path = "~/Desktop/Gov 1005 Projects/shotspotter/shape_files.rds")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -73,23 +36,36 @@ ui <- fluidPage(
    # Application title
    titlePanel("San Francisco, CA ShotSpotter Data Mapped"),
    
-   fluidRow(
-     column(12, includeMarkdown("shotspotterMD.Rmd"))
-   ),
+   #fluidRow(
+    # column(12, includeMarkdown("shotspotterMD.Rmd"))
+   #),
    
    mainPanel(
      imageOutput("plot1")
-   )
+   ),
+   
+   shotspotter_sf_plot <- read_rds(path = "~/Desktop/Gov 1005 Projects/shotspotter/shotspotter_sf.rds"),
+   sf_shape_files <- read_rds(path = "~/Desktop/Gov 1005 Projects/shotspotter/shape_files.rds")
   
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
    
-   output$plot1 <- renderPlot({
+   output$plot1 <- renderImage({
+     outfile <- tempfile(fileext='.gif')
      
-   })
-}
+     p = ggplot(data = sf_shape_files) + geom_sf() + 
+       geom_sf(data = shotspotter_sf_plot, aes(size = Rnds), show.legend = FALSE) + coord_sf(xlim = c(-122.52, -122.35), ylim = c(37.7, 37.82)) + xlab("Longitude") + ylab("Latitude") +
+       ggtitle("ShotSpotter SF Data Collected at {closest_state}", subtitle = "Size: # of Rounds Fired") + labs(size = "Rounds Fired", color = "Hour of the Day", caption = "Source: Justice Tech Lab") +
+       guides(size=guide_legend(title=NULL), color=guide_legend(title=NULL)) +
+       theme_map() + theme_tufte() + transition_states(Time, state_length = 10, transition_length = 5)
+     
+     anim_save("outfile.gif", animate(p))
+     
+     list(src = "outfile.gif",
+          contentType = 'image/gif')}, deleteFile = TRUE)}
+
      
   
 

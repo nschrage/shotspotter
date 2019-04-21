@@ -41,7 +41,7 @@ san_francisco <- places("ca", class = "sf", cb = TRUE) %>%
   filter(NAME == "San Francisco")
 
 
-
+write_rds(san_francisco, "shape_files.rds", compress = "none")
 
 shotspotter <- shotspotter %>% 
   
