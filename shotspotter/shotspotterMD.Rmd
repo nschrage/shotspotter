@@ -7,8 +7,15 @@ output: html_document
 
 My [Github Repository](https://github.com/nschrage/shotspotter)
 
-Thank you to [Justice Tech Lab](http://justicetechlab.org/shotspotter-data/) for making this data free and accessible. 
+Thank you to [Justice Tech Lab](http://justicetechlab.org/shotspotter-data/) for making this data **free and accessible.** 
 
-Short write up of data...
+Check out some of my other projects: [github](https://github.com/nschrage)
 
-Here is a graph that...
+Hear the voices in my head: [twitter](https://twitter.com/sch_rage) 
+
+### Graph 1: Shots in San Francisco by Time Of Day
+- Not shocking to see that majority of shootings occur after 10 PM. 
+
+### Graph 2: Shots in San Francisco with > 25 Rounds Fired
+- There's a disconnect between the number of occurances, and the new coverage of these events. 
+
