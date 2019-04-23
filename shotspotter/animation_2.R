@@ -1,4 +1,7 @@
-# Animation #1
+
+# a lot of shots.
+
+# load library
 
 library(tigris)
 library(ggplot2)
@@ -51,6 +54,9 @@ san_francisco <- places("ca", class = "sf", cb = TRUE) %>%
 
 shotspotter <- shotspotter %>%
   
+  # filter data for rounds fired > 50
+  
+  filter(Rnds > 20) %>% 
   
   # turn locations into sf object in order to graph 
   st_as_sf(coords = c("Longitude", "Latitude"), crs = st_crs(san_francisco))
@@ -61,9 +67,11 @@ p1 <-  ggplot(data = san_francisco) +
   
   geom_sf() + 
   
-  # putting in layer with shop
+  # putting in layer with shotspotter data
   
-  geom_sf(data = shotspotter, aes(size = Rnds, color = Month)) +
+  geom_sf(data = shotspotter, aes(size = Rnds, color = Year), show.legend = FALSE) +
+  
+  # set up color
   
   scale_color_viridis() + 
   
@@ -77,8 +85,8 @@ p1 <-  ggplot(data = san_francisco) +
   
   # added a title and subtitle
   
-  ggtitle("ShotSpotter SF Data Collected at {closest_state}:00", subtitle = "Size: # of Rounds Fired") +
-  
+  ggtitle("ShotSpotter SF Data Collected in {closest_state}, with > 25 Rounds Fired", subtitle = "Size: # of Rounds Fired, Color: Year") +
+ 
   # added caption
   
   labs(caption = "Source: Justice Tech Lab") +
@@ -95,10 +103,10 @@ p1 <-  ggplot(data = san_francisco) +
   
   # added animation
   
-  transition_states(Hours, state_length = 96)
+  transition_states(Year)
 
 p1
 
 # saved animation to bring to shiny
 
-anim_save("shotspotter_anim_.gif", animation = last_animation(), path = "~/Desktop/Gov 1005 Projects/shotspotter/shotspotter/")
+anim_save("shotspotter_anim_2.gif", animation = last_animation(), path = "~/Desktop/Gov 1005 Projects/shotspotter/shotspotter/")
