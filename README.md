@@ -1,5 +1,7 @@
 # shotspotter
 
+link to my [site](http://bit.ly/shotspotter_sf)
+
 special thanks to [Justice Tech Lab](http://justicetechlab.org/shotspotter-data/) for making their data publically availible.
 
 Looked into the SF data specifically by **time of day** and **# of shots fired**.
