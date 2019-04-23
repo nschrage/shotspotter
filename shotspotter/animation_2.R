@@ -36,6 +36,9 @@ shotspotter <- read_csv("http://justicetechlab.org/wp-content/uploads/2018/05/Sa
                             Longitude = col_double()
                           )) %>% 
   
+  # manipulated the data, turned rounds into numeric values, turned date into
+  # date via lubridate and then made new columns from that
+  
   mutate(Rnds = as.numeric(Rnds)) %>%
   
   mutate(Date = dmy(Date)) %>% 
@@ -56,7 +59,7 @@ shotspotter <- shotspotter %>%
   
   # filter data for rounds fired > 50
   
-  filter(Rnds > 20) %>% 
+  filter(Rnds > 25) %>% 
   
   # turn locations into sf object in order to graph 
   st_as_sf(coords = c("Longitude", "Latitude"), crs = st_crs(san_francisco))
@@ -93,7 +96,7 @@ p1 <-  ggplot(data = san_francisco) +
   
   # turn off guide
   
-  guides(size=guide_legend(title=NULL)) +
+  guides(size=guide_legend(element_blank)) +
   
   # added map and minimalist tufte theme
   
