@@ -39,7 +39,9 @@ ui <- fluidPage(
    ),
    
    mainPanel(
-     imageOutput("plot1")
+     imageOutput("plot1"),
+     
+     imageOutput("plot2")
    
      )
   
@@ -51,8 +53,16 @@ server <- function(input, output) {
    output$plot1 <- renderImage({
      outfile <- tempfile(fileext='.gif')
 
-     list(src = "shotspotter_anim.gif",
-          contentType = 'image/gif')}, deleteFile = FALSE)}
+     list(src = "shotspotter_anim_1.gif",
+          contentType = 'image/gif')}, deleteFile = FALSE)
+   
+   output$plot2 <- renderImage({
+     outfile <- tempfile(fileext='.gif')
+     
+     list(src = "shotspotter_anim_2.gif",
+          contentType = 'image/gif')}, deleteFile = FALSE)
+   
+   }
 
      
   
